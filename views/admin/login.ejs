@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        .signup-redirect {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .signup-redirect a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .signup-redirect a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Admin Login</h2>
+        <form id="loginForm">
+            <div id="error" class="error-message" style="display: none;"></div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your admin email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your admin password" required>
+            </div>
+            <button onclick="postLogin(event)" >Login</button>
+        </form>
+
+        <!-- Admin Dashboard Redirect Button -->
+        <div class="signup-redirect">
+            <p>Not an admin? <a href="/">Go to User Login</a></p>
+        </div>
+    </div>
+
+    <!-- Axios CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        // Handle form submission
+        // document.getElementById('loginForm').addEventListener('submit', function(event) {
+        //     event.preventDefault(); // Prevent default form submission
+
+           async function postLogin(event){
+            event.preventDefault()
+                
+            // }
+            // Get form data
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Create an object to send in the POST request
+            const data = {
+                email: email,
+                password: password
+            };
+
+            console.log(data);
+            
+            // Send POST request with Axios
+            axios.post('/admin/login', data)  // Change the URL to '/admin/login' for admin login
+    .then(function(response) {
+        const errorMessage = document.getElementById('error');
+
+        if (!response.data.success) {
+            errorMessage.style.display = 'block';
+            errorMessage.textContent = response.data.message;
+        } else {
+            console.log('Login successful:', response.data);
+            // Redirect to the admin dashboard or another page
+            window.location.href = response.data.href;
+        }
+    })
+    .catch(function(error) {
+        console.error('Error during login:', error);
+        const errorMessage = document.getElementById('error');
+        errorMessage.style.display = 'block';
+        errorMessage.textContent = error.response?.data?.message || 'Login failed. Please try again.';
+    });
+
+        };
+    </script>
+</body>
+</html>
